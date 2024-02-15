@@ -1,12 +1,7 @@
 // Code generated from pkg.templ.go. DO NOT EDIT.
 
 // Package mlkem512 implements the IND-CCA2 secure key encapsulation mechanism
-
-// ML-KEM-512 as submitted to round 3 of the NIST PQC competition and
-// described in
-//
-// https://pq-crystals.org/kyber/data/kyber-specification-round3.pdf
-
+// ML-KEM-512 as defined in FIPS203.
 package mlkem512
 
 import (
@@ -126,7 +121,6 @@ func (pk *PublicKey) EncapsulateTo(ct, ss []byte, seed []byte) {
 	}
 
 	var m [32]byte
-
 	copy(m[:], seed)
 
 	// (K', r) = G(m ‖ H(pk))
@@ -140,7 +134,6 @@ func (pk *PublicKey) EncapsulateTo(ct, ss []byte, seed []byte) {
 	pk.pk.EncryptTo(ct, m[:], kr[32:])
 
 	copy(ss, kr[:SharedKeySize])
-
 }
 
 // DecapsulateTo computes the shared key which is encapsulated in ct
@@ -187,8 +180,7 @@ func (sk *PrivateKey) DecapsulateTo(ss, ct []byte) {
 		kr2[:SharedKeySize],
 	)
 
-	copy(ss[:SharedKeySize], ss2[:])
-
+	copy(ss, ss2[:])
 }
 
 // Packs sk to buf.

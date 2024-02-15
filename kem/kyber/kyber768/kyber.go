@@ -1,9 +1,10 @@
 // Code generated from pkg.templ.go. DO NOT EDIT.
 
 // Package kyber768 implements the IND-CCA2 secure key encapsulation mechanism
-
-// Kyber768.CCAKEM as defined in FIPS203.
-
+// Kyber768.CCAKEM as submitted to round 3 of the NIST PQC competition and
+// described in
+//
+// https://pq-crystals.org/kyber/data/kyber-specification-round3.pdf
 package kyber768
 
 import (
@@ -123,7 +124,6 @@ func (pk *PublicKey) EncapsulateTo(ct, ss []byte, seed []byte) {
 	}
 
 	var m [32]byte
-
 	// m = H(seed), the hash of shame
 	h := sha3.New256()
 	h.Write(seed)
@@ -148,7 +148,6 @@ func (pk *PublicKey) EncapsulateTo(ct, ss []byte, seed []byte) {
 	kdf := sha3.NewShake256()
 	kdf.Write(kr[:])
 	kdf.Read(ss[:SharedKeySize])
-
 }
 
 // DecapsulateTo computes the shared key which is encapsulated in ct
@@ -195,8 +194,7 @@ func (sk *PrivateKey) DecapsulateTo(ss, ct []byte) {
 	// K = KDF(K''/z, H(c))
 	kdf := sha3.NewShake256()
 	kdf.Write(kr2[:])
-	kdf.Read(ss[:SharedKeySize])
-
+	kdf.Read(ss)
 }
 
 // Packs sk to buf.
